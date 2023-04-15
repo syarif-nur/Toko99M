@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Toko99</string>
+    <string name="app_name">Toko 99</string>
+    <string name="menu">Menu</string>
+    <string name="home">Home</string>
+    <string name="piutang">Piutang</string>
+
+
 </resources>

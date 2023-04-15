@@ -19,22 +19,17 @@ class MainActivity : ComponentActivity() {
             Toko99Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    Toko99App()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     Toko99Theme {
-        Greeting("Android")
+        Toko99App()
     }
 }
