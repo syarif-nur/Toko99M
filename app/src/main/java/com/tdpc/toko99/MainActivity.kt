@@ -26,10 +26,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    Toko99Theme {
-        Toko99App()
-    }
-}

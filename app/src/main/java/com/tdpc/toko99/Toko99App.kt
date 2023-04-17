@@ -3,6 +3,7 @@ package com.tdpc.toko99
 import android.icu.text.CaseMap.Title
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -33,18 +36,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.tdpc.toko99.module.PiutangScreen
+import com.tdpc.toko99.module.home.HomeScreen
+import com.tdpc.toko99.ui.navigation.NavigationItem
+import com.tdpc.toko99.ui.navigation.Screen
 import com.tdpc.toko99.ui.theme.Toko99Theme
 
 @Composable
-fun Toko99App() {
+fun Toko99App(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController()
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     val appState = remeberMyNavDrawerState()
     Scaffold(
         scaffoldState = appState.scaffoldState,
@@ -55,20 +77,56 @@ fun Toko99App() {
         },
         drawerContent = {
             MyDrawerContent(
-                onItemSelected = appState::onItemSelected,
-                onBackPress = appState::onBackPress
-            )
+                onBackPress = appState::onBackPress,
+                navHostController = navController,
+                onItemSelected =  appState::onItemSelected,
+                )
         },
         drawerGesturesEnabled = appState.scaffoldState.drawerState.isOpen
     )
     { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(paddingValues)
         ) {
-            Text(stringResource(R.string.app_name))
+//            composable(Screen.Home.route) {
+//                HomeScreen(
+//                    navigateToDetail = { megamanId ->
+//                        navController.navigate(Screen.DetailMegaman.createRoute(megamanId))
+//                    })
+//            }
+            composable(Screen.Piutang.route) {
+                PiutangScreen()
+            }
+            composable(Screen.Home.route) {
+                HomeScreen()
+            }
+//            composable(Screen.Profile.route) {
+//                ProfileScreen()
+//            }
+//            composable(
+//                route = Screen.DetailMegaman.route,
+//                arguments = listOf(navArgument("megamanId") { type = NavType.LongType })
+//            ) {
+//                val id = it.arguments?.getLong("megamanId") ?: -1L
+//                DetailScreen(
+//                    megamanId = id,
+//                    navigateBack = {
+//                        navController.navigateUp()
+//                    },
+//                    navigateToFavorite = {
+//                        navController.popBackStack()
+//                        navController.navigate(Screen.Favorite.route) {
+//                            popUpTo(navController.graph.findStartDestination().id) {
+//                                saveState = true
+//                            }
+//                            launchSingleTop = true
+//                            restoreState = true
+//                        }
+//                    }
+//                )
+//            }
         }
     }
 }
@@ -92,35 +150,64 @@ fun MyTopBar(onMenuClick: () -> Unit) {
     )
 }
 
-data class MenuItem(val title: String, val icon: ImageVector)
-
 @Composable
 fun MyDrawerContent(
     modifier: Modifier = Modifier,
-    onItemSelected: (title: String) -> Unit,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    navHostController: NavHostController,
+    onItemSelected: () -> Unit,
 ) {
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val items = listOf(
-        MenuItem(
+        NavigationItem(
             title = stringResource(id = R.string.home),
-            icon = Icons.Default.Home
+            icon = Icons.Default.Home,
+            screen = Screen.Home
         ),
-        MenuItem(
+        NavigationItem(
             title = stringResource(id = R.string.piutang),
-            icon = Icons.Default.Person
+            icon = Icons.Default.Person,
+            screen = Screen.Piutang
         )
     )
-    Column(modifier.fillMaxSize()) {
+    Column(
+        modifier
+            .fillMaxSize()
+            .padding(top = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .height(19.dp)
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.primary)
-        )
+                .size(126.dp)
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                modifier = Modifier
+                    .matchParentSize(),
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "",
+            )
+            Image(
+                modifier = Modifier
+                    .scale(1.4f),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = "",
+            )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Divider()
         for (item in items) {
             Row(
                 modifier
-                    .clickable { }
+                    .clickable {
+                        navHostController.navigate(item.screen.route) {
+                            popUpTo(navHostController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                        onItemSelected()
+                    }
                     .padding(vertical = 12.dp, horizontal = 16.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically) {
@@ -164,5 +251,13 @@ fun BackPressHandler(enabled: Boolean = true, onBackPressed: () -> Unit) {
         onDispose {
             backCallback.remove()
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    Toko99Theme {
+        Toko99App()
     }
 }

@@ -23,7 +23,7 @@ class MyNavDrawerState(
         }
     }
 
-    fun onItemSelected(title: String) {
+    fun onItemSelected() {
         scope.launch {
             scaffoldState.drawerState.close()
 //            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
