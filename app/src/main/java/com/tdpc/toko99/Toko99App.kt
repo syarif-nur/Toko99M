@@ -1,6 +1,8 @@
 package com.tdpc.toko99
 
 import android.icu.text.CaseMap.Title
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,10 +26,16 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,24 +44,22 @@ import androidx.navigation.compose.rememberNavController
 import com.tdpc.toko99.ui.theme.Toko99Theme
 
 @Composable
-fun Toko99App(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-) {
-//    val appState = rememberMyNavDrawerState()
+fun Toko99App() {
+    val appState = remeberMyNavDrawerState()
     Scaffold(
+        scaffoldState = appState.scaffoldState,
         topBar = {
             MyTopBar(
-                onMenuClick = {}
+                onMenuClick = { appState.onMenuClick() }
             )
         },
         drawerContent = {
             MyDrawerContent(
-//                onItemSelected = "null",
-//                onBackPress = ""
+                onItemSelected = appState::onItemSelected,
+                onBackPress = appState::onBackPress
             )
         },
-        drawerGesturesEnabled = true
+        drawerGesturesEnabled = appState.scaffoldState.drawerState.isOpen
     )
     { paddingValues ->
         Box(
@@ -91,8 +97,8 @@ data class MenuItem(val title: String, val icon: ImageVector)
 @Composable
 fun MyDrawerContent(
     modifier: Modifier = Modifier,
-//    onItemSelected: (title: String) -> Unit,
-//    onBackPress: () -> Unit
+    onItemSelected: (title: String) -> Unit,
+    onBackPress: () -> Unit
 ) {
     val items = listOf(
         MenuItem(
@@ -129,6 +135,34 @@ fun MyDrawerContent(
         }
         Divider()
     }
-//    BackPressHandler{
-//    }
+    BackPressHandler {
+        onBackPress()
+    }
+}
+
+@Composable
+fun BackPressHandler(enabled: Boolean = true, onBackPressed: () -> Unit) {
+    val currentOnBackPressed by rememberUpdatedState(onBackPressed)
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBackPressed()
+            }
+        }
+    }
+
+    SideEffect {
+        backCallback.isEnabled = enabled
+    }
+
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, backDispatcher) {
+        backDispatcher.addCallback(lifecycleOwner, backCallback)
+        onDispose {
+            backCallback.remove()
+        }
+    }
 }
