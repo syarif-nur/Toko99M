@@ -1,10 +1,8 @@
-package com.tdpc.toko99
+package com.tdpc.toko99.app
 
-import android.icu.text.CaseMap.Title
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +23,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -39,23 +38,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.tdpc.toko99.R
 import com.tdpc.toko99.module.PiutangScreen
 import com.tdpc.toko99.module.home.HomeScreen
+import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
 import com.tdpc.toko99.ui.theme.Toko99Theme
@@ -158,6 +156,7 @@ fun MyDrawerContent(
     onItemSelected: () -> Unit,
 ) {
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     val items = listOf(
         NavigationItem(
             title = stringResource(id = R.string.home),
@@ -210,7 +209,8 @@ fun MyDrawerContent(
                     }
                     .padding(vertical = 12.dp, horizontal = 16.dp)
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = item.title,
@@ -218,6 +218,8 @@ fun MyDrawerContent(
                 )
                 Spacer(modifier = Modifier.width(32.dp))
                 Text(text = item.title, style = MaterialTheme.typography.subtitle2)
+                Spacer(modifier = Modifier.width(32.dp))
+                if (currentRoute == item.screen.route) Icon(imageVector = Icons.Default.Check,contentDescription = "")
             }
         }
         Divider()

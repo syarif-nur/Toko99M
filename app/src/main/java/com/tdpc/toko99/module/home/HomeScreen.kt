@@ -1,84 +1,76 @@
 package com.tdpc.toko99.module.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tdpc.toko99.R
+import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.ui.theme.Toko99Theme
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.dicoding.academy.themealsapp.ui.view.EmptyView
+import com.dicoding.academy.themealsapp.ui.view.LoadingView
+import com.tdpc.toko99.core.di.Injection
+import com.tdpc.toko99.ui.common.ViewModelFactory
+
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(
+        factory = ViewModelFactory(Injection.provideMealUseCase(LocalContext.current))
+    )
 ) {
-    Column(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
-        ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = modifier
-                        .padding(top = 20.dp)
-                        .size(200.dp)
-                        .height(400.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .clip(RoundedCornerShape(50)),
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.home),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.h5.copy(
-                        fontWeight = FontWeight.ExtraBold
-                    ),
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(4.dp)
-                        .background(Color.LightGray)
-                )
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.subtitle1.copy(
-                        fontWeight = FontWeight.ExtraBold
-                    ),
-                    color = MaterialTheme.colors.secondary
-                )
-            }
+    val barang = viewModel.getBarang().observeAsState().value
+    barang?.let {
+//        if (data != null) {
+//            when (data) {
+//                is Resource.Loading -> LoadingView()
+//                is Resource.Success -> {
+//                    HomeContent(
+//                        barang = data.data!!,
+//                        modifier = modifier,
+//                    )
+//                }
+//                is Resource.Error -> {
+//                    EmptyView()
+//                }
+//            }
+//        }
+        if (!it.data.isNullOrEmpty()) {
+            HomeContent(
+                barang = it.data,
+                modifier = modifier,
+            )
+        } else if (it.data != null) {
+            LoadingView()
+        } else {
+            EmptyView()
+            viewModel.getBarang()
         }
+    }
+
+}
+
+@Composable
+fun HomeContent(
+    modifier: Modifier = Modifier,
+    barang: List<BarangModel>
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+    ) {
+        items(barang) { data ->
+            BarangRow(barangModel = data)
+        }
+
     }
 }
 

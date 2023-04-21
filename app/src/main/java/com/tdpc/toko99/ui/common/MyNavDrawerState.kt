@@ -1,4 +1,4 @@
-package com.tdpc.toko99
+package com.tdpc.toko99.ui.common
 
 import android.content.Context
 import android.widget.Toast
