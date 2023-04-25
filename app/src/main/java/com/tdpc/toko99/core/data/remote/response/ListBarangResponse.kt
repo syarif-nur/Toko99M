@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class ListBarangResponse(
 
 	@field:SerializedName("per_page")
-	val perPage: Int? = null,
+	val perPage: Int,
 
 	@field:SerializedName("data")
 	val data: List<ItemBarang>,
@@ -14,10 +14,10 @@ data class ListBarangResponse(
 	val lastPage: Int? = null,
 
 	@field:SerializedName("next_page_url")
-	val nextPageUrl: Any? = null,
+	val nextPageUrl: String? = null,
 
 	@field:SerializedName("prev_page_url")
-	val prevPageUrl: Any? = null,
+	val prevPageUrl: String? = null,
 
 	@field:SerializedName("first_page_url")
 	val firstPageUrl: String? = null,

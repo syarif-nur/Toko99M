@@ -28,26 +28,12 @@ fun HomeScreen(
 ) {
     val barang = viewModel.getBarang().observeAsState().value
     barang?.let {
-//        if (data != null) {
-//            when (data) {
-//                is Resource.Loading -> LoadingView()
-//                is Resource.Success -> {
-//                    HomeContent(
-//                        barang = data.data!!,
-//                        modifier = modifier,
-//                    )
-//                }
-//                is Resource.Error -> {
-//                    EmptyView()
-//                }
-//            }
-//        }
-        if (!it.data.isNullOrEmpty()) {
+        if (it != null && it.isNotEmpty()) {
             HomeContent(
-                barang = it.data,
+                barang = it,
                 modifier = modifier,
             )
-        } else if (it.data != null) {
+        } else if (it != null) {
             LoadingView()
         } else {
             EmptyView()
