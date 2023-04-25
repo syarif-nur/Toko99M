@@ -85,7 +85,7 @@ fun PiutangScreen(
 @Preview
 @Composable
 fun ProfilePreview() {
-    Toko99Theme() {
+    Toko99Theme {
         PiutangScreen()
     }
 }
