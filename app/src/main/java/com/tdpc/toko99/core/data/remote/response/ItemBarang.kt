@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName
 data class ItemBarang(
 
     @field:SerializedName("updated_at")
-    val updatedAt: String? = null,
+    val updatedAt: String,
 
     @field:SerializedName("img_url")
     val imgUrl: String,
 
     @field:SerializedName("satuan")
-    val satuan: List<SatuanBarang>? = null,
+    val satuan: List<SatuanBarang?>? = null,
 
     @field:SerializedName("created_at")
-    val createdAt: String? = null,
+    val createdAt: String,
 
     @field:SerializedName("nama_barang")
     val namaBarang: String,
@@ -23,5 +23,5 @@ data class ItemBarang(
     val id: Int,
 
     @field:SerializedName("status")
-    val status: Int? = null
+    val status: Int
 )

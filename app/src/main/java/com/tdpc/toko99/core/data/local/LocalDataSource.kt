@@ -1,5 +1,6 @@
 package com.tdpc.toko99.core.data.local
 
+import androidx.lifecycle.LiveData
 import com.tdpc.toko99.core.data.local.entity.BarangEntity
 import com.tdpc.toko99.core.data.local.room.BarangDao
 import kotlinx.coroutines.flow.Flow
@@ -14,8 +15,8 @@ class LocalDataSource(private val barangDao: BarangDao) {
             }
     }
 
-    fun getAllGame(): Flow<List<BarangEntity>> = barangDao.getAllBarang()
+    fun getAllBarang(): LiveData<List<BarangEntity>> = barangDao.getAllBarang()
 
-    suspend fun insertGame(barangList: List<BarangEntity>) = barangDao.insertBarang(barangList)
+    suspend fun insertBarang(barangList: List<BarangEntity>) = barangDao.insertBarang(barangList)
 
 }

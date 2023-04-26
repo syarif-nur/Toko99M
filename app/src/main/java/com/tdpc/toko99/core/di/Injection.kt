@@ -9,6 +9,7 @@ import com.tdpc.toko99.core.data.remote.retrofit.ApiConfig
 import com.tdpc.toko99.core.domain.repository.IStoreRepository
 import com.tdpc.toko99.core.domain.usecase.StoreInteractor
 import com.tdpc.toko99.core.domain.usecase.StoreUseCase
+import com.tdpc.toko99.core.utils.AppExecutors
 
 object Injection {
 
@@ -16,7 +17,8 @@ object Injection {
         val database = BarangDatabase.getInstance(context)
         val remoteDataSource = RemoteDataSource.getInstance(ApiConfig.provideApiService())
         val localDataSource = LocalDataSource.getInstance(database.BarangDao())
-        return StoreRepository.getInstance(remoteDataSource, localDataSource)
+        val appExecutors = AppExecutors()
+        return StoreRepository.getInstance(remoteDataSource, localDataSource,appExecutors)
     }
 
     fun provideMealUseCase(context: Context): StoreUseCase {
