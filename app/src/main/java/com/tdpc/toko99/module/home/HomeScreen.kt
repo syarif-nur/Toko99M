@@ -63,7 +63,7 @@ fun HomeContent(
 @Preview
 @Composable
 fun ProfilePreview() {
-    Toko99Theme() {
+    Toko99Theme {
         HomeScreen()
     }
 }

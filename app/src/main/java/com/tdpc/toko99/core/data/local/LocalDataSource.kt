@@ -3,7 +3,6 @@ package com.tdpc.toko99.core.data.local
 import androidx.lifecycle.LiveData
 import com.tdpc.toko99.core.data.local.entity.BarangEntity
 import com.tdpc.toko99.core.data.local.room.BarangDao
-import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSource(private val barangDao: BarangDao) {
