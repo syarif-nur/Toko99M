@@ -11,6 +11,7 @@ interface ApiService {
     @GET("/api/list-barang/")
     fun getBarang(
         @Header("Authorization") bearer: String = "Bearer brBxjqBD9GLb5vBLLxMyeEcIWgvrg4tHuY8S25o6",
+//        @Query("page") page: Int
     ): Call<ListBarangResponse>
 
 }
