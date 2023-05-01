@@ -1,5 +1,7 @@
 package com.tdpc.toko99.app
 
+import android.content.Context
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
@@ -15,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -27,6 +31,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
@@ -39,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,6 +59,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tdpc.toko99.R
 import com.tdpc.toko99.module.PiutangScreen
 import com.tdpc.toko99.module.home.HomeScreen
+import com.tdpc.toko99.module.store.StoreScreen
 import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
@@ -61,12 +68,33 @@ import com.tdpc.toko99.ui.theme.Toko99Theme
 @Composable
 fun Toko99App(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    context: Context = LocalContext.current
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = remeberMyNavDrawerState()
     Scaffold(
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                onClick = {
+//                    when (currentRoute) {
+//                        Screen.Home.route -> {
+//                            navController.navigate("store"){
+//                                popUpTo("home")
+//                            }
+//                        }
+//                        Screen.Piutang.route ->{
+//                            Toast.makeText(context,"this is piutang",Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                },
+//                shape = RoundedCornerShape(16.dp),
+//                backgroundColor = MaterialTheme.colors.primary
+//            ) {
+//                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
+//            }
+//        },
         scaffoldState = appState.scaffoldState,
         topBar = {
             MyTopBar(
@@ -77,8 +105,8 @@ fun Toko99App(
             MyDrawerContent(
                 onBackPress = appState::onBackPress,
                 navHostController = navController,
-                onItemSelected =  appState::onItemSelected,
-                )
+                onItemSelected = appState::onItemSelected,
+            )
         },
         drawerGesturesEnabled = appState.scaffoldState.drawerState.isOpen
     )
@@ -99,6 +127,9 @@ fun Toko99App(
             }
             composable(Screen.Home.route) {
                 HomeScreen()
+            }
+            composable(Screen.Store.route) {
+                StoreScreen()
             }
 //            composable(Screen.Profile.route) {
 //                ProfileScreen()
@@ -172,7 +203,8 @@ fun MyDrawerContent(
     Column(
         modifier
             .fillMaxSize()
-            .padding(top = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            .padding(top = 8.dp), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier
                 .size(126.dp)
@@ -219,7 +251,7 @@ fun MyDrawerContent(
                 Spacer(modifier = Modifier.width(32.dp))
                 Text(text = item.title, style = MaterialTheme.typography.subtitle2)
                 Spacer(modifier = Modifier.width(32.dp))
-                if (currentRoute == item.screen.route) Icon(imageVector = Icons.Default.Check,contentDescription = "")
+                if (currentRoute == item.screen.route) Icon(imageVector = Icons.Default.Check, contentDescription = "")
             }
         }
         Divider()

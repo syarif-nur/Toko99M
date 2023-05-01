@@ -1,11 +1,13 @@
 package com.tdpc.toko99.core.utils
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.tdpc.toko99.core.data.local.entity.BarangEntity
 import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import com.tdpc.toko99.core.domain.model.BarangModel
 
 object DataMapper {
-    fun mapResponseToDomain(input: List<ItemBarang>): List<BarangModel> {
+    fun mapResponseToDomain(input: PagingData<ItemBarang>): ArrayList<BarangModel> {
         val barangList = ArrayList<BarangModel>()
         input.map {
             val game = BarangModel(

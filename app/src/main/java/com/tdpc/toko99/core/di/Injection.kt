@@ -6,6 +6,7 @@ import com.tdpc.toko99.core.data.local.LocalDataSource
 import com.tdpc.toko99.core.data.local.room.BarangDatabase
 import com.tdpc.toko99.core.data.remote.RemoteDataSource
 import com.tdpc.toko99.core.data.remote.retrofit.ApiConfig
+import com.tdpc.toko99.core.data.remote.retrofit.ApiService
 import com.tdpc.toko99.core.domain.repository.IStoreRepository
 import com.tdpc.toko99.core.domain.usecase.StoreInteractor
 import com.tdpc.toko99.core.domain.usecase.StoreUseCase
@@ -13,7 +14,7 @@ import com.tdpc.toko99.core.utils.AppExecutors
 
 object Injection {
 
-    fun provideRepository(context: Context): IStoreRepository {
+    private fun provideRepository(context: Context): IStoreRepository {
         val database = BarangDatabase.getInstance(context)
         val remoteDataSource = RemoteDataSource.getInstance(ApiConfig.provideApiService())
         val localDataSource = LocalDataSource.getInstance(database.BarangDao())

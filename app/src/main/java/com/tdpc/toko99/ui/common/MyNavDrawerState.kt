@@ -20,7 +20,6 @@ class MyNavDrawerState(
     val scaffoldState: ScaffoldState,
     private val scope: CoroutineScope,
     private val context: Context,
-    private val navHostController: NavHostController
 ) {
     fun onMenuClick() {
         scope.launch {
@@ -31,17 +30,6 @@ class MyNavDrawerState(
     fun onItemSelected() {
         scope.launch {
             scaffoldState.drawerState.close()
-//            val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-//                message = context.resources.getString(R.string.coming_soon, title),
-//                actionLabel = context.resources.getString(R.string.subscribe_question)
-//            )
-//            if (snackbarResult == SnackbarResult.ActionPerformed) {
-//                Toast.makeText(
-//                    context,
-//                    context.resources.getString(R.string.subscribed_info),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
         }
     }
 
@@ -64,7 +52,7 @@ fun remeberMyNavDrawerState(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     coroutinesScope: CoroutineScope = rememberCoroutineScope(),
     context: Context = LocalContext.current,
-    navHostController: NavHostController = rememberNavController(),
-): MyNavDrawerState = remember(scaffoldState, coroutinesScope, context, navHostController) {
-    MyNavDrawerState(scaffoldState, coroutinesScope, context, navHostController)
+
+): MyNavDrawerState = remember(scaffoldState, coroutinesScope, context) {
+    MyNavDrawerState(scaffoldState, coroutinesScope, context)
 }

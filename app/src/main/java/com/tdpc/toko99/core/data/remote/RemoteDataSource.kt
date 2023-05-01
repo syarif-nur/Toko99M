@@ -4,9 +4,12 @@ import android.content.ClipData.Item
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import com.tdpc.toko99.core.data.remote.response.ListBarangResponse
 import com.tdpc.toko99.core.data.remote.retrofit.ApiService
+import com.tdpc.toko99.module.home.BarangPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,27 +30,12 @@ class RemoteDataSource private constructor(private val apiService: ApiService){
             }
     }
 
-    fun getAllBarang(): LiveData<List<ItemBarang>> {
-        val resultData = MutableLiveData<List<ItemBarang>>()
-
-        val client = apiService.getBarang()
-
-        client.enqueue(object : Callback<ListBarangResponse> {
-            override fun onResponse(
-                call: Call<ListBarangResponse>,
-                response: Response<ListBarangResponse>
-            ) {
-                val dataArray = response.body()
-                if (dataArray != null) {
-                    resultData.value =  dataArray.data
-                }
-            }
-
-            override fun onFailure(call: Call<ListBarangResponse>, t: Throwable) {
-                Log.e("RemoteDataSource", t.message.toString())
-            }
-        })
-
-        return resultData
-    }
+    fun getAllBarang() = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+        ),
+        pagingSourceFactory = {
+            BarangPagingSource(apiService)
+        }
+    ).flow
 }

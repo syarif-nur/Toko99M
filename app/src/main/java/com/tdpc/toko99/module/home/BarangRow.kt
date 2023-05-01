@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.ui.theme.Shapes
 import com.tdpc.toko99.ui.theme.Toko99Theme
@@ -24,7 +25,7 @@ import com.tdpc.toko99.ui.theme.Toko99Theme
 
 @Composable
 fun BarangRow(
-    barangModel: BarangModel,
+    barangModel: ItemBarang,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -64,10 +65,13 @@ fun BarangRow(
 fun ItemBarangPreview() {
     Toko99Theme {
         BarangRow(
-            BarangModel(
+            ItemBarang(
                 id = 1,
                 namaBarang = "Title",
                 imgUrl = "https://www.themealdb.com/images/category/beef.png",
+                status = 1,
+                createdAt = "",
+                updatedAt = ""
             )
         )
     }
