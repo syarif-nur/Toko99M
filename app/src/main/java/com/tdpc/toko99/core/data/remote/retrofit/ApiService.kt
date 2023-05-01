@@ -4,14 +4,16 @@ import com.tdpc.toko99.core.data.remote.response.ListBarangResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("/api/list-barang/")
+    @GET("/api/list-barang/{search}")
     suspend fun getBarang(
         @Header("Authorization") bearer: String = "Bearer 3ZITsXihhIMj4sIXGvcw8mI4JluCh0xmS5Onr99o",
-        @Query("page") page: Int
+        @Path("search") search: String?,
+        @Query("page") page: Int,
     ): ListBarangResponse
 
 }

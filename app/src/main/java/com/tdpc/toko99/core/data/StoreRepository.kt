@@ -38,6 +38,6 @@ class StoreRepository(
     }
 
 
-    override fun getAllBarang() = remoteDataSource.getAllBarang()
+    override fun getAllBarang(keyword: String) = remoteDataSource.getAllBarang(keyword)
 
 }

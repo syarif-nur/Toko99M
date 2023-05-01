@@ -30,12 +30,12 @@ class RemoteDataSource private constructor(private val apiService: ApiService){
             }
     }
 
-    fun getAllBarang() = Pager(
+    fun getAllBarang(keyword: String) = Pager(
         config = PagingConfig(
             pageSize = 10,
         ),
         pagingSourceFactory = {
-            BarangPagingSource(apiService)
+            BarangPagingSource(apiService,keyword)
         }
     ).flow
 }

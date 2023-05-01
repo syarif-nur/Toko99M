@@ -8,5 +8,5 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
 
-    fun getBarang() = storeUseCase.getAllBarang().cachedIn(viewModelScope)
+    fun getBarang(keyword: String) = storeUseCase.getAllBarang(keyword).cachedIn(viewModelScope)
 }

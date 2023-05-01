@@ -7,6 +7,6 @@ import com.tdpc.toko99.core.domain.model.BarangModel
 import kotlinx.coroutines.flow.Flow
 
 interface IStoreRepository {
-    fun getAllBarang(): Flow<PagingData<ItemBarang>>
+    fun getAllBarang(keyword: String): Flow<PagingData<ItemBarang>>
 
 }
