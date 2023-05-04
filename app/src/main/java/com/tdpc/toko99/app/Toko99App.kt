@@ -59,6 +59,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tdpc.toko99.R
 import com.tdpc.toko99.module.PiutangScreen
 import com.tdpc.toko99.module.home.HomeScreen
+import com.tdpc.toko99.module.master.MasterBarangScreen
 import com.tdpc.toko99.module.store.StoreScreen
 import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
@@ -131,9 +132,9 @@ fun Toko99App(
             composable(Screen.Store.route) {
                 StoreScreen()
             }
-//            composable(Screen.Profile.route) {
-//                ProfileScreen()
-//            }
+            composable(Screen.MasterBarang.route) {
+                MasterBarangScreen()
+            }
 //            composable(
 //                route = Screen.DetailMegaman.route,
 //                arguments = listOf(navArgument("megamanId") { type = NavType.LongType })

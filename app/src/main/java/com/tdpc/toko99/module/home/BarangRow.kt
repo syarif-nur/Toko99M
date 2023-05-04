@@ -25,7 +25,7 @@ import com.tdpc.toko99.ui.theme.Toko99Theme
 
 @Composable
 fun BarangRow(
-    barangModel: ItemBarang,
+    barangModel: BarangModel,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -65,13 +65,10 @@ fun BarangRow(
 fun ItemBarangPreview() {
     Toko99Theme {
         BarangRow(
-            ItemBarang(
+            BarangModel(
                 id = 1,
                 namaBarang = "Title",
                 imgUrl = "https://www.themealdb.com/images/category/beef.png",
-                status = 1,
-                createdAt = "",
-                updatedAt = ""
             )
         )
     }

@@ -74,7 +74,7 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    barang: LazyPagingItems<ItemBarang>,
+    barang: LazyPagingItems<BarangModel>,
     searchButton: (String) -> Unit,
 ) {
     var keyword by rememberSaveable { mutableStateOf("") }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tdpc.toko99.core.di.Injection
 import com.tdpc.toko99.core.domain.usecase.StoreUseCase
 import com.tdpc.toko99.module.home.HomeViewModel
+import com.tdpc.toko99.module.store.StoreViewModel
 
 class ViewModelFactory(private val storeUseCase: StoreUseCase) : ViewModelProvider.NewInstanceFactory() {
 
@@ -27,10 +28,11 @@ class ViewModelFactory(private val storeUseCase: StoreUseCase) : ViewModelProvid
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(storeUseCase) as T
             }
-
+            modelClass.isAssignableFrom(StoreViewModel::class.java) -> {
+                StoreViewModel(storeUseCase) as T
+            }
 
             else -> throw Throwable("Unknown ViewModel class: " + modelClass.name)
         }
-
 
 }

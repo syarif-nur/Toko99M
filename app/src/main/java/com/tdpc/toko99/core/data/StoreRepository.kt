@@ -5,6 +5,7 @@ import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.tdpc.toko99.core.data.local.LocalDataSource
 import com.tdpc.toko99.core.data.remote.RemoteDataSource
 import com.tdpc.toko99.core.data.remote.response.ItemBarang
@@ -38,6 +39,14 @@ class StoreRepository(
     }
 
 
-    override fun getAllBarang(keyword: String) = remoteDataSource.getAllBarang(keyword)
-
+    override fun getAllBarang(keyword: String): Flow<PagingData<BarangModel>> {
+        return remoteDataSource.getAllBarang(keyword).map { pagingData ->
+            pagingData.map { itemBarang ->
+                BarangModel(
+                    itemBarang.id,
+                    itemBarang.namaBarang,
+                    itemBarang.imgUrl)
+            }
+        }
+    }
 }

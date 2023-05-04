@@ -25,8 +25,12 @@ android {
 
     buildTypes {
         release {
+            buildConfigField "String", "API_KEY", '"Bearer 3ZITsXihhIMj4sIXGvcw8mI4JluCh0xmS5Onr99o"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "String", "API_KEY", '"Bearer 3ZITsXihhIMj4sIXGvcw8mI4JluCh0xmS5Onr99o"'
         }
     }
     compileOptions {
@@ -86,6 +90,15 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.0.1"
     implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
 
+
+    //camera
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-video:${camerax_version}"
+
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-extensions:${camerax_version}"
 
 
 }
