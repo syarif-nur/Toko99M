@@ -1,5 +1,6 @@
 package com.tdpc.toko99.app
 
+import android.Manifest
 import android.content.Context
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -56,6 +57,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.tdpc.toko99.R
 import com.tdpc.toko99.module.PiutangScreen
 import com.tdpc.toko99.module.home.HomeScreen
@@ -66,6 +70,7 @@ import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
 import com.tdpc.toko99.ui.theme.Toko99Theme
 
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class)
 @Composable
 fun Toko99App(
     modifier: Modifier = Modifier,
@@ -75,27 +80,29 @@ fun Toko99App(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = remeberMyNavDrawerState()
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     Scaffold(
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                onClick = {
-//                    when (currentRoute) {
-//                        Screen.Home.route -> {
-//                            navController.navigate("store"){
-//                                popUpTo("home")
-//                            }
-//                        }
-//                        Screen.Piutang.route ->{
-//                            Toast.makeText(context,"this is piutang",Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                },
-//                shape = RoundedCornerShape(16.dp),
-//                backgroundColor = MaterialTheme.colors.primary
-//            ) {
-//                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
-//            }
-//        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    when (currentRoute) {
+                        Screen.Home.route -> {
+                            navController.navigate("store"){
+                                popUpTo("home")
+                            }
+                            cameraPermissionState.launchPermissionRequest()
+                        }
+                        Screen.Piutang.route ->{
+                            Toast.makeText(context,"this is piutang",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                shape = RoundedCornerShape(16.dp),
+                backgroundColor = MaterialTheme.colors.primary
+            ) {
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
+            }
+        },
         scaffoldState = appState.scaffoldState,
         topBar = {
             MyTopBar(
