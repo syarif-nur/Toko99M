@@ -9,4 +9,5 @@ import kotlinx.coroutines.flow.Flow
 
 class StoreInteractor(private val storeRepository: IStoreRepository) : StoreUseCase {
     override fun getAllBarang(keyword: String): Flow<PagingData<BarangModel>> = storeRepository.getAllBarang(keyword)
+
 }

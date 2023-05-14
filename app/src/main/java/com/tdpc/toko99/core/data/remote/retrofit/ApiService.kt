@@ -35,4 +35,10 @@ interface ApiService {
         @Part file:MultipartBody.Part,
         @Part("nama_barang") descriptor:RequestBody
     ): Call <ResponseBarang>
+
+    @GET("detail-barang/{id}")
+    suspend fun detailBarang(
+        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Path("id") id: Int,
+    ): ListBarangResponse
 }

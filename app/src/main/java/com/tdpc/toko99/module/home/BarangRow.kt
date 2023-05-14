@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import com.tdpc.toko99.core.domain.model.BarangModel
@@ -54,22 +55,23 @@ fun BarangRow(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.subtitle1.copy(
                     fontWeight = FontWeight.ExtraBold
-                )
+                ),
+                fontSize = 20.sp
             )
         }
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun ItemBarangPreview() {
-    Toko99Theme {
-        BarangRow(
-            BarangModel(
-                id = 1,
-                namaBarang = "Title",
-                imgUrl = "https://www.themealdb.com/images/category/beef.png",
-            )
-        )
-    }
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun ItemBarangPreview() {
+//    Toko99Theme {
+//        BarangRow(
+//            BarangModel(
+//                id = 1,
+//                namaBarang = "Title",
+//                imgUrl = "https://www.themealdb.com/images/category/beef.png",
+//            )
+//        )
+//    }
+//}

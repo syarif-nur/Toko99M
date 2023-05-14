@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface StoreUseCase {
     fun getAllBarang(keyword: String): Flow<PagingData<BarangModel>>
+
+
 }

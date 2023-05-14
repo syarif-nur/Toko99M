@@ -1,5 +1,6 @@
 package com.tdpc.toko99.module.store
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.tdpc.toko99.BuildConfig
@@ -8,6 +9,7 @@ import com.tdpc.toko99.core.data.remote.retrofit.ApiConfig
 import com.tdpc.toko99.core.domain.usecase.StoreUseCase
 import com.tdpc.toko99.core.utils.Event
 import com.tdpc.toko99.core.utils.reduceFileImage
+import com.tdpc.toko99.core.utils.rotateFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,7 +24,8 @@ class StoreViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
 
     fun uploadImage(setDescription: String, getFile: File?) {
         if (getFile != null) {
-            val file = reduceFileImage(getFile)
+            val bitmap  = rotateFile(getFile)
+            val file = reduceFileImage(bitmap)
             val description = setDescription.toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(

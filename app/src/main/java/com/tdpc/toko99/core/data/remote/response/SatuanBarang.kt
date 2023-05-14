@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class SatuanBarang(
 
     @field:SerializedName("harga")
-    val harga: Int? = null,
+    val harga: Double? = null,
 
     @field:SerializedName("updated_at")
     val updatedAt: String? = null,

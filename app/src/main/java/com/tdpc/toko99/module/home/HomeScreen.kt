@@ -3,6 +3,7 @@ package com.tdpc.toko99.module.home
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +57,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(Injection.provideMealUseCase(LocalContext.current))
     ),
-//    navController: NavHostController = rememberNavController(),
+    navigateToDetail: (BarangModel) -> Unit
 ) {
     var keyword by rememberSaveable { mutableStateOf("") }
 
@@ -64,6 +65,7 @@ fun HomeScreen(
     HomeContent(
         barang = barang,
         modifier = modifier,
+        navigateToDetail = navigateToDetail
     ) {
         keyword = it
         viewModel.getBarang(it)
@@ -75,6 +77,7 @@ fun HomeScreen(
 fun HomeContent(
     modifier: Modifier = Modifier,
     barang: LazyPagingItems<BarangModel>,
+    navigateToDetail: (BarangModel) -> Unit,
     searchButton: (String) -> Unit,
 ) {
     var keyword by rememberSaveable { mutableStateOf("") }
@@ -83,7 +86,7 @@ fun HomeContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(8.dp)
     ) {
         Row {
             TextField(
@@ -115,7 +118,12 @@ fun HomeContent(
                 items = barang
             ) { data ->
                 if (data != null) {
-                    BarangRow(barangModel = data)
+                    BarangRow(
+                        barangModel = data,
+                        modifier = Modifier.clickable {
+                            navigateToDetail(data)
+                        }
+                    )
                 }
             }
             when (val state = barang.loadState.refresh) {
@@ -174,6 +182,8 @@ fun HomeContent(
 @Composable
 fun ProfilePreview() {
     Toko99Theme {
-        HomeScreen()
+        HomeScreen(
+            navigateToDetail = {}
+        )
     }
 }

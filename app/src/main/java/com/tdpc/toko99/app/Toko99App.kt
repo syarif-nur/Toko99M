@@ -2,6 +2,7 @@ package com.tdpc.toko99.app
 
 import android.Manifest
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -53,15 +54,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.tdpc.toko99.R
+import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.module.PiutangScreen
+import com.tdpc.toko99.module.detail.DetailScreen
 import com.tdpc.toko99.module.home.HomeScreen
 import com.tdpc.toko99.module.master.MasterBarangScreen
 import com.tdpc.toko99.module.store.StoreScreen
@@ -69,8 +74,9 @@ import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
 import com.tdpc.toko99.ui.theme.Toko99Theme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun Toko99App(
     modifier: Modifier = Modifier,
@@ -83,24 +89,27 @@ fun Toko99App(
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    when (currentRoute) {
-                        Screen.Home.route -> {
-                            navController.navigate("store"){
-                                popUpTo("home")
+            if (currentRoute == Screen.Home.route) {
+                FloatingActionButton(
+                    onClick = {
+                        when (currentRoute) {
+                            Screen.Home.route -> {
+                                navController.navigate("store") {
+                                    popUpTo("home")
+                                }
+                                cameraPermissionState.launchPermissionRequest()
                             }
-                            cameraPermissionState.launchPermissionRequest()
+
+                            Screen.Piutang.route -> {
+                                Toast.makeText(context, "this is piutang", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        Screen.Piutang.route ->{
-                            Toast.makeText(context,"this is piutang",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                },
-                shape = RoundedCornerShape(16.dp),
-                backgroundColor = MaterialTheme.colors.primary
-            ) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    backgroundColor = MaterialTheme.colors.primary
+                ) {
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
+                }
             }
         },
         scaffoldState = appState.scaffoldState,
@@ -124,23 +133,48 @@ fun Toko99App(
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-//            composable(Screen.Home.route) {
-//                HomeScreen(
-//                    navigateToDetail = { megamanId ->
-//                        navController.navigate(Screen.DetailMegaman.createRoute(megamanId))
-//                    })
-//            }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    navigateToDetail = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "barangModel",
+                            value = it
+                        )
+                        navController.navigate(Screen.DetailBarang.route)
+                    }
+                )
+            }
             composable(Screen.Piutang.route) {
                 PiutangScreen()
             }
-            composable(Screen.Home.route) {
-                HomeScreen()
-            }
             composable(Screen.Store.route) {
-                StoreScreen()
+                StoreScreen(
+                    navigateToHome = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+
+                    }
+                )
             }
             composable(Screen.MasterBarang.route) {
                 MasterBarangScreen()
+            }
+            composable(route = Screen.DetailBarang.route)
+            {
+                val barangModel =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
+                if (barangModel != null) {
+                    Log.i("barangModel", "$barangModel")
+                    DetailScreen(
+                        barangModel = barangModel
+                    )
+                }
             }
 //            composable(
 //                route = Screen.DetailMegaman.route,
