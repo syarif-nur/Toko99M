@@ -14,14 +14,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
-import com.tdpc.toko99.core.data.remote.response.ItemBarang
 import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.ui.theme.Shapes
-import com.tdpc.toko99.ui.theme.Toko99Theme
 
 
 @Composable
@@ -53,9 +50,7 @@ fun BarangRow(
                 text = barangModel.namaBarang,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.subtitle1.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
+                style = MaterialTheme.typography.subtitle2,
                 fontSize = 20.sp
             )
         }

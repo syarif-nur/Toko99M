@@ -1,9 +1,7 @@
 package com.tdpc.toko99.app
 
 import android.Manifest
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
@@ -45,8 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,12 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -67,13 +61,13 @@ import com.tdpc.toko99.R
 import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.module.PiutangScreen
 import com.tdpc.toko99.module.detail.DetailScreen
+import com.tdpc.toko99.module.detail.add.AddDetailScreen
 import com.tdpc.toko99.module.home.HomeScreen
-import com.tdpc.toko99.module.master.MasterBarangScreen
 import com.tdpc.toko99.module.store.StoreScreen
 import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
-import com.tdpc.toko99.ui.theme.Toko99Theme
+import com.tdpc.toko99.ui.theme.AppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class, ExperimentalCoroutinesApi::class)
@@ -81,7 +75,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun Toko99App(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    context: Context = LocalContext.current
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -98,10 +91,6 @@ fun Toko99App(
                                     popUpTo("home")
                                 }
                                 cameraPermissionState.launchPermissionRequest()
-                            }
-
-                            Screen.Piutang.route -> {
-                                Toast.makeText(context, "this is piutang", Toast.LENGTH_SHORT).show()
                             }
                         }
                     },
@@ -162,8 +151,26 @@ fun Toko99App(
                     }
                 )
             }
-            composable(Screen.MasterBarang.route) {
-                MasterBarangScreen()
+            composable(route = Screen.AddDetailBarang.route) {
+                val barangModel =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
+                if (barangModel != null) {
+                    Log.i("barangModel", "$barangModel")
+                    AddDetailScreen(
+                        barangModel = barangModel,
+                        navigateToHome = {
+                            navController.popBackStack()
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.AddDetailBarang.route) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    )
+                }
             }
             composable(route = Screen.DetailBarang.route)
             {
@@ -172,10 +179,20 @@ fun Toko99App(
                 if (barangModel != null) {
                     Log.i("barangModel", "$barangModel")
                     DetailScreen(
-                        barangModel = barangModel
+                        barangModel = barangModel,
+                        navigateToAddDetail = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "barangModel",
+                                value = it
+                            )
+                            navController.navigate(Screen.AddDetailBarang.route)
+                        }
                     )
                 }
             }
+//            composable(Screen.AddDetailBarang.route) {
+//                AddDetailScreen()
+//            }
 //            composable(
 //                route = Screen.DetailMegaman.route,
 //                arguments = listOf(navArgument("megamanId") { type = NavType.LongType })
@@ -333,7 +350,7 @@ fun BackPressHandler(enabled: Boolean = true, onBackPressed: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    Toko99Theme {
+    AppTheme() {
         Toko99App()
     }
 }

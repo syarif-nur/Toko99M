@@ -6,8 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tdpc.toko99.core.data.local.entity.BarangEntity
-import com.tdpc.toko99.core.data.remote.response.ItemBarang
-import kotlinx.coroutines.flow.Flow
 
 
 @Dao

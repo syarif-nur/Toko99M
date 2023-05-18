@@ -1,7 +1,6 @@
 package com.tdpc.toko99.core.domain.model
 
 import android.os.Parcelable
-import com.tdpc.toko99.core.data.remote.response.SatuanBarang
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

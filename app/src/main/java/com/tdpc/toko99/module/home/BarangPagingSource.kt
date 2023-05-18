@@ -1,6 +1,5 @@
 package com.tdpc.toko99.module.home
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tdpc.toko99.core.data.remote.response.ItemBarang

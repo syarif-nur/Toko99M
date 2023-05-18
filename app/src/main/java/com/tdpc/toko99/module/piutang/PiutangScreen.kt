@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tdpc.toko99.R
-import com.tdpc.toko99.ui.theme.Toko99Theme
+import com.tdpc.toko99.ui.theme.AppTheme
 
 @Composable
 fun PiutangScreen(
@@ -85,7 +85,7 @@ fun PiutangScreen(
 @Preview
 @Composable
 fun ProfilePreview() {
-    Toko99Theme {
+    AppTheme() {
         PiutangScreen()
     }
 }

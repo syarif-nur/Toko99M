@@ -6,6 +6,8 @@ import com.tdpc.toko99.core.data.remote.response.ResponseBarang
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -41,4 +43,13 @@ interface ApiService {
         @Header("Authorization") bearer: String = BuildConfig.API_KEY,
         @Path("id") id: Int,
     ): ListBarangResponse
+
+    @FormUrlEncoded
+    @POST("store-satuan/{id_barang}")
+    fun storeSatuan(
+        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Path("id_barang") id: Int,
+        @Field("satuan") satuan : String,
+        @Field("harga") harga : Double,
+    ): Call<ResponseBarang>
 }
