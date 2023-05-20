@@ -2,8 +2,9 @@ package com.tdpc.toko99.ui.common
 
 import android.app.Activity
 import android.content.Context
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -12,28 +13,28 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MyNavDrawerState(
-    val scaffoldState: ScaffoldState,
+    val drawerState: DrawerState,
     private val scope: CoroutineScope,
     private val context: Context,
 ) {
     fun onMenuClick() {
         scope.launch {
-            scaffoldState.drawerState.open()
+            drawerState.open()
         }
     }
 
     fun onItemSelected() {
         scope.launch {
-            scaffoldState.drawerState.close()
+            drawerState.close()
         }
     }
 
     fun onBackPress() {
-        if (scaffoldState.drawerState.isOpen) {
+        if (drawerState.isOpen) {
             scope.launch {
-                scaffoldState.drawerState.close()
+                drawerState.close()
             }
-        } else if (scaffoldState.drawerState.isClosed) {
+        } else if (drawerState.isClosed) {
             scope.launch {
                 val close = context as Activity
                 close.finish()
@@ -44,10 +45,10 @@ class MyNavDrawerState(
 
 @Composable
 fun remeberMyNavDrawerState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     coroutinesScope: CoroutineScope = rememberCoroutineScope(),
     context: Context = LocalContext.current,
 
-): MyNavDrawerState = remember(scaffoldState, coroutinesScope, context) {
-    MyNavDrawerState(scaffoldState, coroutinesScope, context)
+): MyNavDrawerState = remember(drawerState, coroutinesScope, context) {
+    MyNavDrawerState(drawerState, coroutinesScope, context)
 }

@@ -2,6 +2,7 @@ package com.tdpc.toko99.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -129,7 +130,7 @@ fun AppTheme(
     }
 
     // Make use of Material3 imports
-    androidx.compose.material3.MaterialTheme(
+    MaterialTheme(
         colorScheme = colorScheme,
         typography = AppTypography,
         content = content

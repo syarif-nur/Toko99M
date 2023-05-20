@@ -18,25 +18,36 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,161 +84,143 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun Toko99App(
-    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = remeberMyNavDrawerState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
-    Scaffold(
-        floatingActionButton = {
-            if (currentRoute == Screen.Home.route) {
-                FloatingActionButton(
-                    onClick = {
-                        when (currentRoute) {
-                            Screen.Home.route -> {
-                                navController.navigate("store") {
-                                    popUpTo("home")
-                                }
-                                cameraPermissionState.launchPermissionRequest()
-                            }
-                        }
-                    },
-                    shape = RoundedCornerShape(16.dp),
-                    backgroundColor = MaterialTheme.colors.primary
-                ) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
-                }
-            }
-        },
-        scaffoldState = appState.scaffoldState,
-        topBar = {
-            MyTopBar(
-                onMenuClick = { appState.onMenuClick() }
-            )
-        },
+    ModalNavigationDrawer(
+        drawerState = appState.drawerState,
+        scrimColor = MaterialTheme.colorScheme.scrim,
         drawerContent = {
             MyDrawerContent(
-                onBackPress = appState::onBackPress,
+                onBackPress = { appState.onBackPress() },
                 navHostController = navController,
-                onItemSelected = appState::onItemSelected,
+                onItemSelected = { appState.onItemSelected() },
             )
         },
-        drawerGesturesEnabled = appState.scaffoldState.drawerState.isOpen
-    )
-    { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Home.route,
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    navigateToDetail = {
-                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                            key = "barangModel",
-                            value = it
-                        )
-                        navController.navigate(Screen.DetailBarang.route)
-                    }
-                )
-            }
-            composable(Screen.Piutang.route) {
-                PiutangScreen()
-            }
-            composable(Screen.Store.route) {
-                StoreScreen(
-                    navigateToHome = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-
-                    }
-                )
-            }
-            composable(route = Screen.AddDetailBarang.route) {
-                val barangModel =
-                    navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
-                if (barangModel != null) {
-                    Log.i("barangModel", "$barangModel")
-                    AddDetailScreen(
-                        barangModel = barangModel,
-                        navigateToHome = {
-                            navController.popBackStack()
-                            navController.navigate(Screen.Home.route) {
-                                popUpTo(Screen.AddDetailBarang.route) {
-                                    inclusive = true
-                                    saveState = true
+        gesturesEnabled = true,
+        content = {
+            Scaffold(
+                floatingActionButton = {
+                    if (currentRoute == Screen.Home.route) {
+                        FloatingActionButton(
+                            onClick = {
+                                when (currentRoute) {
+                                    Screen.Home.route -> {
+                                        navController.navigate("store") {
+                                            popUpTo("home")
+                                        }
+                                        cameraPermissionState.launchPermissionRequest()
+                                    }
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ) {
+                            Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add FAB")
+                        }
+                    }
+                },
+                topBar = {
+                    MyTopBar(
+                        onMenuClick = { appState.onMenuClick() }
+                    )
+                },
+            ) { paddingValues ->
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.Home.route,
+                    modifier = Modifier.padding(paddingValues)
+                ) {
+                    composable(Screen.Home.route) {
+                        HomeScreen(
+                            navigateToDetail = {
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    key = "barangModel",
+                                    value = it
+                                )
+                                navController.navigate(Screen.DetailBarang.route)
                             }
-                        }
-                    )
-                }
-            }
-            composable(route = Screen.DetailBarang.route)
-            {
-                val barangModel =
-                    navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
-                if (barangModel != null) {
-                    Log.i("barangModel", "$barangModel")
-                    DetailScreen(
-                        barangModel = barangModel,
-                        navigateToAddDetail = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                key = "barangModel",
-                                value = it
+                        )
+                    }
+                    composable(Screen.Piutang.route) {
+                        PiutangScreen()
+                    }
+                    composable(Screen.Store.route) {
+                        StoreScreen(
+                            navigateToHome = {
+                                navController.popBackStack()
+                                navController.navigate(Screen.Home.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+
+                            }
+                        )
+                    }
+                    composable(route = Screen.AddDetailBarang.route) {
+                        val barangModel =
+                            navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
+                        if (barangModel != null) {
+                            Log.i("barangModel", "$barangModel")
+                            AddDetailScreen(
+                                barangModel = barangModel,
+                                navigateToHome = {
+                                    navController.popBackStack()
+                                    navController.navigate(Screen.Home.route) {
+                                        popUpTo(Screen.AddDetailBarang.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
                             )
-                            navController.navigate(Screen.AddDetailBarang.route)
                         }
-                    )
+                    }
+                    composable(route = Screen.DetailBarang.route)
+                    {
+                        val barangModel =
+                            navController.previousBackStackEntry?.savedStateHandle?.get<BarangModel>("barangModel")
+                        if (barangModel != null) {
+                            Log.i("barangModel", "$barangModel")
+                            DetailScreen(
+                                barangModel = barangModel,
+                                navigateToAddDetail = {
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                        key = "barangModel",
+                                        value = it
+                                    )
+                                    navController.navigate(Screen.AddDetailBarang.route)
+                                }
+                            )
+                        }
+                    }
                 }
             }
-//            composable(Screen.AddDetailBarang.route) {
-//                AddDetailScreen()
-//            }
-//            composable(
-//                route = Screen.DetailMegaman.route,
-//                arguments = listOf(navArgument("megamanId") { type = NavType.LongType })
-//            ) {
-//                val id = it.arguments?.getLong("megamanId") ?: -1L
-//                DetailScreen(
-//                    megamanId = id,
-//                    navigateBack = {
-//                        navController.navigateUp()
-//                    },
-//                    navigateToFavorite = {
-//                        navController.popBackStack()
-//                        navController.navigate(Screen.Favorite.route) {
-//                            popUpTo(navController.graph.findStartDestination().id) {
-//                                saveState = true
-//                            }
-//                            launchSingleTop = true
-//                            restoreState = true
-//                        }
-//                    }
-//                )
-//            }
         }
-    }
+    )
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTopBar(onMenuClick: () -> Unit) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(onClick = {
                 onMenuClick()
             }) {
                 Icon(
-                    imageVector = Icons.Default.Menu,
+                    imageVector = Icons.Rounded.Menu,
                     contentDescription = stringResource(id = R.string.menu)
                 )
             }
@@ -284,7 +277,6 @@ fun MyDrawerContent(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Divider()
         for (item in items) {
             Row(
                 modifier
@@ -308,12 +300,11 @@ fun MyDrawerContent(
                     tint = Color.DarkGray
                 )
                 Spacer(modifier = Modifier.width(32.dp))
-                Text(text = item.title, style = MaterialTheme.typography.subtitle2)
+                Text(text = item.title, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.width(32.dp))
                 if (currentRoute == item.screen.route) Icon(imageVector = Icons.Default.Check, contentDescription = "")
             }
         }
-        Divider()
     }
     BackPressHandler {
         onBackPress()
