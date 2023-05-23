@@ -15,7 +15,7 @@ import com.tdpc.toko99.core.domain.model.BarangModel
 interface BarangDao {
 
     @Query("SELECT * FROM barang_list")
-    fun getAllBarang(): PagingSource<Int,ItemBarang>
+    fun getAllBarang(): PagingSource<Int,BarangEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBarang(game: List<BarangEntity>)

@@ -3,13 +3,19 @@ package com.tdpc.toko99.module.home
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -33,6 +39,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import androidx.paging.compose.items
 import com.tdpc.toko99.core.di.Injection
 import com.tdpc.toko99.core.domain.model.BarangModel
@@ -98,21 +106,27 @@ fun HomeContent(
                 )
             }
         }
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = modifier
-        ) {
-            items(
-                items = barang
-            ) { data ->
-                if (data != null) {
-                    BarangRow(
-                        barangModel = data,
-                        modifier = Modifier.clickable {
-                            navigateToDetail(data)
-                        }
-                    )
+        Box(modifier = modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                contentPadding = PaddingValues(6.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = modifier.matchParentSize(),
+                columns = GridCells.Fixed(3)
+            ) {
+                items(
+                    count = barang.itemCount,
+                    key = barang.itemKey(),
+                    contentType = barang.itemContentType()
+                ) { index ->
+                    val item = barang[index]
+                    if (item != null) {
+                        BarangRow(
+                            barangModel = item,
+                            modifier = Modifier.clickable {
+                                navigateToDetail(item)
+                            }
+                        )
+                    }
                 }
             }
             when (val state = barang.loadState.refresh) {
@@ -120,21 +134,19 @@ fun HomeContent(
                     Log.e("PagingData: ", state.toString())
                 }
                 is LoadState.Loading -> {
-                    item {
-                        Column(
+                    Column(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
                             modifier = Modifier
-                                .fillParentMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .padding(8.dp),
-                                text = "Refresh Loading"
-                            )
-
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                        }
+                                .padding(8.dp),
+                            text = "Refresh Loading"
+                        )
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
 
@@ -144,25 +156,22 @@ fun HomeContent(
                 is LoadState.Error -> {
                     state.error
                 }
-                is LoadState.Loading -> { // Pagination Loading UI
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-                            Text(text = "Pagination Loading")
 
-                            CircularProgressIndicator(color = Color.Black)
-                        }
+                is LoadState.Loading -> { // Pagination Loading UI
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(text = "Pagination Loading")
+
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
 
                 else -> {}
             }
         }
-
     }
 }
 

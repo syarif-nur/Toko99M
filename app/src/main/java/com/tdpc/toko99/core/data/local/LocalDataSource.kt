@@ -16,7 +16,7 @@ class LocalDataSource(private val barangDao: BarangDao) {
             }
     }
 
-    fun getAllBarang(): PagingSource<Int,ItemBarang> = barangDao.getAllBarang()
+    fun getAllBarang(): PagingSource<Int,BarangEntity> = barangDao.getAllBarang()
 
     suspend fun insertBarang(barangList: List<BarangEntity>) = barangDao.insertBarang(barangList)
 

@@ -16,7 +16,7 @@ object Injection {
     private fun provideRepository(context: Context): IStoreRepository {
         val database = BarangDatabase.getInstance(context)
         val remoteDataSource = RemoteDataSource.getInstance(ApiConfig.provideApiService())
-        val localDataSource = LocalDataSource.getInstance(database.BarangDao())
+        val localDataSource = LocalDataSource.getInstance(database.barangDao())
         val appExecutors = AppExecutors()
         return StoreRepository.getInstance(remoteDataSource, localDataSource,appExecutors)
     }

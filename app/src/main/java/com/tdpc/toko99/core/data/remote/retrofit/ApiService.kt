@@ -22,6 +22,7 @@ interface ApiService {
         @Header("Authorization") bearer: String = BuildConfig.API_KEY,
         @Path("search") search: String?,
         @Query("page") page: Int,
+        @Query("size") size: Int = 10,
     ): ListBarangResponse
 
     @GET("master-barang")

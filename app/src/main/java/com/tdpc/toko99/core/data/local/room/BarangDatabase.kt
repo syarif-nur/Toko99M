@@ -10,7 +10,7 @@ import com.tdpc.toko99.core.data.local.entity.BarangEntity
 @Database(entities = [BarangEntity::class], version = 1, exportSchema = false)
 abstract class BarangDatabase: RoomDatabase() {
 
-    abstract fun BarangDao(): BarangDao
+    abstract fun barangDao(): BarangDao
 
     companion object {
         @Volatile

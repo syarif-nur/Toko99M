@@ -12,8 +12,8 @@ import retrofit2.Response
 
 class AddDetailViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
 
-    fun uploadSatuan(id: Int, satuan: String, harga: Double) {
-        if (true) {
+    fun uploadSatuan(id: Int, satuan: String, harga: Double = 0.0) {
+        if (satuan != null || harga != null) {
 //            val bitmap  = rotateFile(getFile)
 //            val file = reduceFileImage(bitmap)
 //            val description = setDescription.toRequestBody("text/plain".toMediaType())
@@ -58,6 +58,7 @@ class AddDetailViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
         } else {
 //            _isLoading.value = false
 //            _toast.value = Event("Please Insert the Picture First")
+            Log.e(TAG, " Tidak Boleh Null")
         }
     }
 
