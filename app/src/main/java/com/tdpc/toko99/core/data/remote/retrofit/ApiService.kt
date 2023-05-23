@@ -17,10 +17,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("list-barang/{search}")
+    @GET("list-barang/")
     suspend fun getBarang(
         @Header("Authorization") bearer: String = BuildConfig.API_KEY,
-        @Path("search") search: String?,
+        @Query("s") search: String?,
         @Query("page") page: Int,
         @Query("size") size: Int = 10,
     ): ListBarangResponse
