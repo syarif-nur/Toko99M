@@ -1,8 +1,10 @@
 package com.tdpc.toko99.core.data.local
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import com.tdpc.toko99.core.data.local.entity.BarangEntity
 import com.tdpc.toko99.core.data.local.room.BarangDao
+import com.tdpc.toko99.core.data.remote.response.ItemBarang
 
 class LocalDataSource(private val barangDao: BarangDao) {
     companion object {
@@ -14,7 +16,7 @@ class LocalDataSource(private val barangDao: BarangDao) {
             }
     }
 
-    fun getAllBarang(): LiveData<List<BarangEntity>> = barangDao.getAllBarang()
+    fun getAllBarang(): PagingSource<Int,ItemBarang> = barangDao.getAllBarang()
 
     suspend fun insertBarang(barangList: List<BarangEntity>) = barangDao.insertBarang(barangList)
 

@@ -8,6 +8,7 @@ import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.core.domain.model.SatuanModel
 import com.tdpc.toko99.core.domain.repository.IStoreRepository
 import com.tdpc.toko99.core.utils.AppExecutors
+import com.tdpc.toko99.core.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -33,23 +34,10 @@ class StoreRepository(
 
 
     override fun getAllBarang(keyword: String): Flow<PagingData<BarangModel>> {
-        return remoteDataSource.getAllBarang(keyword).map { pagingData ->
-            pagingData.map { itemBarang ->
-                BarangModel(
-                    itemBarang.id,
-                    itemBarang.namaBarang,
-                    itemBarang.imgUrl,
-                    itemBarang.satuan?.map { satuanBarang ->
-                        SatuanModel(
-                            satuanBarang?.id,
-                            satuanBarang?.idBarang,
-                            satuanBarang?.satuan,
-                            satuanBarang?.harga
-                        )
-                    }
-                )
-            }
+        return remoteDataSource.getAllBarang(keyword).map {
+            DataMapper.mapResponseToDomain(it)
         }
     }
-
 }
+
+

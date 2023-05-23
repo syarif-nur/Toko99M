@@ -48,7 +48,7 @@ fun remeberMyNavDrawerState(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     coroutinesScope: CoroutineScope = rememberCoroutineScope(),
     context: Context = LocalContext.current,
-
-): MyNavDrawerState = remember(drawerState, coroutinesScope, context) {
-    MyNavDrawerState(drawerState, coroutinesScope, context)
-}
+    ): MyNavDrawerState =
+    remember(drawerState, coroutinesScope, context) {
+        MyNavDrawerState(drawerState, coroutinesScope, context)
+    }

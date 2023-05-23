@@ -79,6 +79,7 @@ import com.tdpc.toko99.ui.common.remeberMyNavDrawerState
 import com.tdpc.toko99.ui.navigation.NavigationItem
 import com.tdpc.toko99.ui.navigation.Screen
 import com.tdpc.toko99.ui.theme.AppTheme
+import com.tdpc.toko99.ui.theme.Shapes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalCoilApi::class, ExperimentalCoroutinesApi::class)
@@ -94,11 +95,15 @@ fun Toko99App(
         drawerState = appState.drawerState,
         scrimColor = MaterialTheme.colorScheme.scrim,
         drawerContent = {
-            MyDrawerContent(
-                onBackPress = { appState.onBackPress() },
-                navHostController = navController,
-                onItemSelected = { appState.onItemSelected() },
-            )
+            ModalDrawerSheet(
+                drawerShape = Shapes.small
+            ) {
+                MyDrawerContent(
+                    onBackPress = { appState.onBackPress() },
+                    navHostController = navController,
+                    onItemSelected = { appState.onItemSelected() },
+                )
+            }
         },
         gesturesEnabled = true,
         content = {
@@ -128,6 +133,7 @@ fun Toko99App(
                         onMenuClick = { appState.onMenuClick() }
                     )
                 },
+                contentColor = MaterialTheme.colorScheme.primary
             ) { paddingValues ->
                 NavHost(
                     navController = navController,
@@ -277,6 +283,7 @@ fun MyDrawerContent(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
+        Divider()
         for (item in items) {
             Row(
                 modifier
@@ -305,6 +312,7 @@ fun MyDrawerContent(
                 if (currentRoute == item.screen.route) Icon(imageVector = Icons.Default.Check, contentDescription = "")
             }
         }
+        Divider()
     }
     BackPressHandler {
         onBackPress()
