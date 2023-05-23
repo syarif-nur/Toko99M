@@ -25,12 +25,6 @@ interface ApiService {
         @Query("size") size: Int = 10,
     ): ListBarangResponse
 
-    @GET("master-barang")
-    fun masterBarang(
-        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
-        @Query("page") page: Int,
-    ): Call<ListBarangResponse>
-
     @Multipart
     @POST("store-barang")
     fun storeBarang(

@@ -91,6 +91,7 @@ fun Toko99App(
     val currentRoute = navBackStackEntry?.destination?.route
     val appState = remeberMyNavDrawerState()
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+    val snackbarHostState = remember { SnackbarHostState() }
     ModalNavigationDrawer(
         drawerState = appState.drawerState,
         scrimColor = MaterialTheme.colorScheme.scrim,
@@ -108,6 +109,7 @@ fun Toko99App(
         gesturesEnabled = true,
         content = {
             Scaffold(
+                snackbarHost = { SnackbarHost(hostState = snackbarHostState )},
                 floatingActionButton = {
                     if (currentRoute == Screen.Home.route) {
                         FloatingActionButton(
@@ -165,8 +167,8 @@ fun Toko99App(
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-
-                            }
+                            },
+                            snackbarHostState = snackbarHostState
                         )
                     }
                     composable(route = Screen.AddDetailBarang.route) {
