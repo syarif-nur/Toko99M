@@ -168,7 +168,7 @@ fun Toko99App(
                                     restoreState = true
                                 }
                             },
-                            snackbarHostState = snackbarHostState
+                            snackbarHostState = snackbarHostState,
                         )
                     }
                     composable(route = Screen.AddDetailBarang.route) {
@@ -188,7 +188,8 @@ fun Toko99App(
                                         launchSingleTop = true
                                         restoreState = true
                                     }
-                                }
+                                },
+                                snackbarHostState = snackbarHostState
                             )
                         }
                     }

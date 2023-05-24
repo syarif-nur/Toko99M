@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Button
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +35,7 @@ fun AddDetailScreen(
         factory = ViewModelFactory(Injection.provideMealUseCase(LocalContext.current))
     ),
     navigateToHome: () -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     var satuan by rememberSaveable { mutableStateOf("") }
     var harga by rememberSaveable { mutableStateOf("") }
@@ -65,7 +67,7 @@ fun AddDetailScreen(
         Spacer(modifier = modifier.height(8.dp))
         Button(onClick = {
             viewModel.uploadSatuan(
-                harga = harga.toDouble(),
+                harga = harga,
                 id = barangModel.id,
                 satuan = satuan
             )

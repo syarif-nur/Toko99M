@@ -32,72 +32,77 @@ class StoreViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
     private val _viewState = MutableStateFlow(MainViewState())
     val viewState = _viewState.asStateFlow()
 
-    fun uploadImage(setDescription: String, getFile: File?) {
-        if (getFile != null) {
-            val bitmap = rotateFile(getFile)
-            val file = reduceFileImage(bitmap)
-            val description = setDescription.toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "image", file.name, requestImageFile
-            )
-            val service = ApiConfig.provideApiService().storeBarang(BuildConfig.API_KEY, imageMultipart, description)
-            service.enqueue(object : Callback<ResponseBarang> {
-                override fun onResponse(
-                    call: Call<ResponseBarang>, response: Response<ResponseBarang>
-                ) {
-                    viewModelScope.launch {
-                        _viewState.update { currentState -> currentState.copy(isLoading = true) }
-                    }
-//                    _isLoading.value = true
-                    if (response.isSuccessful) {
-//                        _isLoading.value = false
-                        val responseBody = response.body()
-                        if (responseBody != null && !responseBody.error) {
-                            viewModelScope.launch {
+
+    fun startProcess(getFile: File?, setDescription: String) {
+        viewModelScope.launch {
+            _viewState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+            if (getFile != null && setDescription != "") {
+                val bitmap = rotateFile(getFile)
+                val file = reduceFileImage(bitmap)
+                val description = setDescription.toRequestBody("text/plain".toMediaType())
+                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                    "image", file.name, requestImageFile
+                )
+                val service = ApiConfig.provideApiService().storeBarang(
+                    BuildConfig.API_KEY,
+                    imageMultipart,
+                    description
+                )
+                service.enqueue(object : Callback<ResponseBarang> {
+                    override fun onResponse(
+                        call: Call<ResponseBarang>, response: Response<ResponseBarang>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            if (responseBody != null && !responseBody.error) {
                                 _viewState.update { currentState ->
                                     currentState.copy(
                                         processSuccessEvent = triggered,
                                         isLoading = false
                                     )
                                 }
+                            } else {
+                                _viewState.update { currentState ->
+                                    currentState.copy(
+                                        processSuccessWithStringEvent = triggered(response.body()?.message.toString()),
+                                        isLoading = false
+                                    )
+                                }
+                                Log.e(TAG, "onFailure: ${response.body()?.message}")
                             }
-//                            _toast.value = Event("Upload Success")
-//                            _result.value = Event(true)
                         } else {
-//                            _isLoading.value = false
+                            _viewState.update { currentState ->
+                                currentState.copy(
+                                    processSuccessWithStringEvent = triggered(response.body()?.message.toString()),
+                                    isLoading = false
+                                )
+                            }
                             Log.e(TAG, "onFailure: ${response.body()?.message}")
                         }
-                    } else {
-//                        _isLoading.value = false
-//                        _toast.value = Event("Incomplete Form")
-                        Log.e(TAG, "onFailure: ${response.body()?.message}")
                     }
+
+                    override fun onFailure(call: Call<ResponseBarang>, t: Throwable) {
+                        _viewState.update { currentState ->
+                            currentState.copy(
+                                processSuccessWithStringEvent = triggered(t.message.toString()),
+                                isLoading = false
+                            )
+                        }
+                        Log.e(TAG, "onFailure: ${t.message}")
+                    }
+                })
+            } else {
+                _viewState.update { currentState ->
+                    currentState.copy(
+                        processSuccessWithStringEvent = triggered("Lengkapi Form Terlebih Dahulu"),
+                        isLoading = false
+                    )
                 }
-
-                override fun onFailure(call: Call<ResponseBarang>, t: Throwable) {
-//                    _isLoading.value = false
-                    Log.e(TAG, "onFailure: ${t.message}")
-                }
-            })
-        } else {
-//            _isLoading.value = false
-//            _toast.value = Event("Please Insert the Picture First")
-        }
-    }
-
-    fun startProcess() {
-        viewModelScope.launch {
-
-            _viewState.update { currentState -> currentState.copy(isLoading = true) }
-
-            delay(5000)
-
-            _viewState.update { currentState ->
-                currentState.copy(
-                    processSuccessEvent = triggered,
-                    isLoading = false
-                )
             }
         }
     }
@@ -106,6 +111,7 @@ class StoreViewModel(private val storeUseCase: StoreUseCase) : ViewModel() {
         _viewState.update { currentState ->
             currentState.copy(
                 processSuccessEvent = consumed,
+                processSuccessWithStringEvent = consumed(),
             )
         }
     }

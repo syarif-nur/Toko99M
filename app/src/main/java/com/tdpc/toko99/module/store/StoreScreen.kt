@@ -57,7 +57,6 @@ fun StoreScreen(
     isLoading: Boolean = false,
     snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
     var imageUri by remember { mutableStateOf(EMPTY_IMAGE_URI) }
     var nama_barang by remember { mutableStateOf("") }
     val viewState: MainViewState by viewModel.viewState.collectAsStateWithLifecycle()
@@ -66,7 +65,16 @@ fun StoreScreen(
         onConsumed = viewModel::setShowMessageConsumed,
     ){
         snackbarHostState.showSnackbar("Berhasil")
+        navigateToHome()
     }
+
+    EventEffect(
+        event = viewState.processSuccessWithStringEvent,
+        onConsumed = viewModel::setShowMessageConsumed,
+    ){
+        snackbarHostState.showSnackbar(it)
+    }
+
     if (imageUri != EMPTY_IMAGE_URI) {
         Column(
             modifier = modifier,
@@ -85,11 +93,6 @@ fun StoreScreen(
             Button(onClick = { imageUri = EMPTY_IMAGE_URI }) {
                 Text("Ambil ulang gambar")
             }
-            AnimatedVisibility(visible = isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
             OutlinedTextField(
                 value = nama_barang,
                 onValueChange = {
@@ -97,13 +100,17 @@ fun StoreScreen(
                 },
                 label = { Text("Masukkan Nama Barang.") },
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            AnimatedVisibility(visible = viewState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(bottom = 8.dp))
             Button(
                 onClick = {
-                    viewModel.startProcess()
-//                    navigateToHome()
+                    viewModel.startProcess(imageUri.toFile(),nama_barang)
                 },
-                enabled = !isLoading
+                enabled = !viewState.isLoading
             ) {
                 Text("Upload Barang", style = MaterialTheme.typography.titleMedium)
             }
