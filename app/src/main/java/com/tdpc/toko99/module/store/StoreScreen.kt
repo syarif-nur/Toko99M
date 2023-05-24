@@ -59,12 +59,13 @@ fun StoreScreen(
     var imageUri by remember { mutableStateOf(EMPTY_IMAGE_URI) }
     var nama_barang by remember { mutableStateOf("") }
     val viewState: MainViewState by viewModel.viewState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     EventEffect(
         event = viewState.processSuccessEvent,
         onConsumed = viewModel::setShowMessageConsumed,
     ){
-        snackbarHostState.showSnackbar("Berhasil")
         navigateToHome()
+        Toast.makeText(context,"Berhasil Diupload",Toast.LENGTH_SHORT).show()
     }
 
     EventEffect(
