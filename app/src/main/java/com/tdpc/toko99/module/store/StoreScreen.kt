@@ -54,7 +54,6 @@ fun StoreScreen(
         factory = ViewModelFactory(Injection.provideMealUseCase(LocalContext.current))
     ),
     navigateToHome: () -> Unit,
-    isLoading: Boolean = false,
     snackbarHostState: SnackbarHostState
 ) {
     var imageUri by remember { mutableStateOf(EMPTY_IMAGE_URI) }
