@@ -41,7 +41,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import androidx.paging.compose.items
 import com.tdpc.toko99.core.di.Injection
 import com.tdpc.toko99.core.domain.model.BarangModel
 import com.tdpc.toko99.ui.common.ViewModelFactory

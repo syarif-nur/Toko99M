@@ -1,4 +1,4 @@
-package com.tdpc.toko99.module
+package com.tdpc.toko99.module.piutang
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

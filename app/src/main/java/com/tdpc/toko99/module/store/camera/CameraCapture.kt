@@ -64,9 +64,7 @@ fun CameraCapture(
                     .align(Alignment.BottomCenter),
                 onClick = {
                     coroutineScope.launch {
-                        imageCaptureUseCase.takePicture(context.executor).let {
-                            onImageFile(it)
-                        }
+                        onImageFile(imageCaptureUseCase.takePicture(context.executor))
                     }
                 }
             )

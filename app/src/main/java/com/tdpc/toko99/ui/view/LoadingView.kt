@@ -1,4 +1,4 @@
-package com.dicoding.academy.themealsapp.ui.view
+package com.tdpc.toko99.ui.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
