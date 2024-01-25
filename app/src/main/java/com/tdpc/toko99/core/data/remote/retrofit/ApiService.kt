@@ -19,7 +19,7 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("list-barang/")
     suspend fun getBarang(
-        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Header("Authorization") bearer: String = "Bearer CNFtNCCVTHXR7c7YLgEvwn14KZnhRSnEhIt8hpOR",
         @Query("s") search: String?,
         @Query("page") page: Int,
         @Query("size") size: Int = 10,
@@ -28,21 +28,21 @@ interface ApiService {
     @Multipart
     @POST("store-barang")
     fun storeBarang(
-        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Header("Authorization") bearer: String = "Bearer CNFtNCCVTHXR7c7YLgEvwn14KZnhRSnEhIt8hpOR",
         @Part file:MultipartBody.Part,
         @Part("nama_barang") descriptor:RequestBody
     ): Call <ResponseBarang>
 
     @GET("detail-barang/{id}")
     suspend fun detailBarang(
-        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Header("Authorization") bearer: String = "Bearer CNFtNCCVTHXR7c7YLgEvwn14KZnhRSnEhIt8hpOR",
         @Path("id") id: Int,
     ): ListBarangResponse
 
     @FormUrlEncoded
     @POST("store-satuan/{id_barang}")
     fun storeSatuan(
-        @Header("Authorization") bearer: String = BuildConfig.API_KEY,
+        @Header("Authorization") bearer: String = "Bearer CNFtNCCVTHXR7c7YLgEvwn14KZnhRSnEhIt8hpOR",
         @Path("id_barang") id: Int,
         @Field("satuan") satuan : String,
         @Field("harga") harga : Double,
